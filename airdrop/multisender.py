@@ -14,7 +14,7 @@ if os.path.exists(logs_filename):
     mode = 'a+'
 log_file = open(logs_filename, mode)
 
-recipients = open('/Users/elef/github/telon/solana-airdrop/recipients.txt', 'r+')
+recipients = open('recipients.txt', 'r+')
 lines = recipients.readlines()
 
 for i, line in enumerate(lines):

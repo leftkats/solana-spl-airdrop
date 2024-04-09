@@ -29,3 +29,14 @@ spl-token mint <ADDR> 1000000
 spl-token transfer <RECIPIENT_ADDR> 50000 <RECEIVER_ADDR> --fund-recipient
 
 ```
+
+## Setup main net
+```bash
+solana config set --url https://api.mainnet-beta.solana.com/
+# Create wallet
+solana-keygen new --outfile ~/.config/solana/mainnet.json
+# Config the new wallet
+solana config set --keypair ~/.config/solana/mainnet.json
+# Create token address
+spl-token address --token BBfACm5eg8CWmcRmgcn1c2uzN1fGhvQ1b8iDR92uaQVT --verbose
+```

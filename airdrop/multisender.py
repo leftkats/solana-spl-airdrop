@@ -23,10 +23,9 @@ def multisend(
         mode = 'a+'
     log_file_failed = open(logs_failed_path, mode)
 
-
     recipients = open(recipients_path, 'r+')
     lines = recipients.readlines()
-    for i, line in enumerate(lines):
+    for i, _ in enumerate(lines):
         # Transfer
         recipient_address = lines[i].strip().split(',')[0]
         amount = lines[i].strip().split(',')[1]
@@ -41,11 +40,19 @@ def multisend(
         # Log entry
         if stdout:
             status = 'success'
-            writetolog(status, token_address, recipient_address, stdout, stderr, log_file_succeed)
+            file_to_write = log_file_succeed
         else:
             status = 'failed'
-            writetolog(status, token_address, recipient_address, stdout, stderr, log_file_failed)
-        print("i: ",i)
+            file_to_write = log_file_failed
+        writetolog(
+            status,
+            token_address,
+            recipient_address,
+            stdout,
+            stderr,
+            file_to_write,
+        )
+        print("i: ", i)
 
     recipients.close()
     log_file_succeed.close()
@@ -56,7 +63,14 @@ def multisend(
         log_file_failed.close()
 
 
-def writetolog(status, token_address, recipient_address, stdout,stderr, log_file):
+def writetolog(
+    status,
+    token_address,
+    recipient_address,
+    stdout,
+    stderr,
+    log_file
+):
     log_entry = dict(
         timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         status=status,
@@ -71,5 +85,6 @@ def writetolog(status, token_address, recipient_address, stdout,stderr, log_file
         file=log_file,
         flush=True,
     )
+
 
 multisend(token_address, recipients_path, day_key)

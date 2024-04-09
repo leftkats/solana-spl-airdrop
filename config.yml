@@ -1,0 +1,9 @@
+mainnet:
+  url: https://api.mainnet-beta.solana.com
+  keypair_path: ~/.config/solana/mainnet.json
+  token_address: <your-token-address>
+
+devnet:
+  url: https://api.devnet.solana.com
+  keypair_path: ~/.config/solana/devnet.json
+  token_address: <your-token-address>

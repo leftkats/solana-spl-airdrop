@@ -13,10 +13,16 @@ def multisend(
     recipients_path: str,
     day_key: datetime,
 ):
-    logs_path, mode = f'airdrop/airdrop-{day_key}-logs.json', 'w+'
-    if os.path.exists(logs_path):
+    logs_succeed_path, mode = f'airdrop/airdrop-{day_key}-logs-succeed.json', 'w+'
+    if os.path.exists(logs_succeed_path):
         mode = 'a+'
-    log_file = open(logs_path, mode)
+    log_file_succeed = open(logs_succeed_path, mode)
+
+    logs_failed_path, mode = f'airdrop/airdrop-{day_key}-logs-failed.json', 'w+'
+    if os.path.exists(logs_failed_path):
+        mode = 'a+'
+    log_file_failed = open(logs_failed_path, mode)
+
 
     recipients = open(recipients_path, 'r+')
     lines = recipients.readlines()
@@ -44,12 +50,15 @@ def multisend(
         print(json.dumps(
             log_entry,
             ensure_ascii=True),
-            file=log_file,
+            file=log_file_succeed,
             flush=True,
         )
 
     recipients.close()
-    log_file.close()
+    log_file_succeed.close()
+    # We don't want to have an empty file.
+    if os.path.getsize(logs_failed_path) == 0:
+        os.remove(logs_failed_path)
 
 
 multisend(token_address, recipients_path, day_key)

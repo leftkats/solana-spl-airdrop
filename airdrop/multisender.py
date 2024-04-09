@@ -39,26 +39,37 @@ def multisend(
         stdout, stderr = process.communicate()
 
         # Log entry
-        status = 'success' if stdout else 'failed'
-        log_entry = dict(
-            timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            status=status,
-            sender_addr=token_address,
-            reciever_addr=recipient_address,
-            logs=stdout.decode('utf-8') if stdout else stderr.decode('utf-8')
-        )
-        print(json.dumps(
-            log_entry,
-            ensure_ascii=True),
-            file=log_file_succeed,
-            flush=True,
-        )
+        if stdout:
+            status = 'success'
+            writetolog(status, token_address, recipient_address, stdout, stderr, log_file_succeed)
+        else:
+            status = 'failed'
+            writetolog(status, token_address, recipient_address, stdout, stderr, log_file_failed)
+        print("i: ",i)
 
     recipients.close()
     log_file_succeed.close()
     # We don't want to have an empty file.
     if os.path.getsize(logs_failed_path) == 0:
         os.remove(logs_failed_path)
+    else:
+        log_file_failed.close()
 
+
+def writetolog(status, token_address, recipient_address, stdout,stderr, log_file):
+    log_entry = dict(
+        timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        status=status,
+        sender_addr=token_address,
+        reciever_addr=recipient_address,
+        logs=stdout.decode('utf-8') if stdout else stderr.decode('utf-8')
+    )
+    print("logs: ", log_entry)
+    print(json.dumps(
+        log_entry,
+        ensure_ascii=True),
+        file=log_file,
+        flush=True,
+    )
 
 multisend(token_address, recipients_path, day_key)

@@ -13,7 +13,7 @@ def multisend(
     recipients_path: str,
     day_key: datetime,
 ):
-    logs_path, mode = f'airdrop/airdrop-{day_key}.logs', 'w+'
+    logs_path, mode = f'airdrop/airdrop-{day_key}-logs.json', 'w+'
     if os.path.exists(logs_path):
         mode = 'a+'
     log_file = open(logs_path, mode)

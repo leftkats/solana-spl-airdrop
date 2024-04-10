@@ -24,6 +24,13 @@ def send(
     if stdout:
         status = 'success'
         file_to_write = log_file_succeed
+        with open('airdrop/paid.ndjson', 'w+') as paid:
+            paid_account = {
+                "address": recipient,
+                "amount": amount,
+                "signature": "xx"
+            }
+            print(json.dumps(paid_account, ensure_ascii=True), file=paid, flush=True)
     else:
         status = 'failed'
         file_to_write = log_file_failed
@@ -88,23 +95,23 @@ def writetolog(
     )
 
 
-if __name__ == 'main':
-    # Read data
-    paid = get_paid_addresses()
-    recipients = get_recipients()
-    # Create log files
-    logs_succeed_path, mode = f'airdrop/airdrop-{day_key}-logs-succeed.json', 'w+'
-    if os.path.exists(logs_succeed_path):
-        mode = 'a+'
-    log_file_succeed = open(logs_succeed_path, mode)
+# Read data
+paid = get_paid_addresses()
+recipients = get_recipients()
+# Create log files
+logs_succeed_path, mode = f'airdrop/airdrop-{day_key}-logs-succeed.json', 'w+'
+if os.path.exists(logs_succeed_path):
+    mode = 'a+'
+log_file_succeed = open(logs_succeed_path, mode)
 
-    logs_failed_path, mode = f'airdrop/airdrop-{day_key}-logs-failed.json', 'w+'
-    if os.path.exists(logs_failed_path):
-        mode = 'a+'
-    log_file_failed = open(logs_failed_path, mode)
-    # Tranfer tokens to recipients
-    for recipient in recipients:
-        if recipient['address'] in paid:
-            print(f'Found an already paid address --> {recipient["address"]}')
-            continue
-        send(mainnet_token_address, recipient["address"], recipient['amount'])
+logs_failed_path, mode = f'airdrop/airdrop-{day_key}-logs-failed.json', 'w+'
+if os.path.exists(logs_failed_path):
+    mode = 'a+'
+log_file_failed = open(logs_failed_path, mode)
+# Tranfer tokens to recipients
+for recipient in recipients:
+    if recipient['address'] in paid:
+        print(f'Found an already paid address --> {recipient["address"]}')
+        continue
+    print('sending')
+    # send(mainnet_token_address, recipient["address"], recipient['amount'])

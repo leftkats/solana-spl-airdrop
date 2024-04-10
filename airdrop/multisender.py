@@ -3,7 +3,9 @@ import json
 from datetime import datetime
 from subprocess import PIPE, Popen
 
-mainnet_token_address = 'BBfACm5eg8CWmcRmgcn1c2uzN1fGhvQ1b8iDR92uaQVT'
+DAB_TOKEN_ADDRESS = 'BBfACm5eg8CWmcRmgcn1c2uzN1fGhvQ1b8iDR92uaQVT'
+DEVNET_TOKEN_ADDRESS=''
+
 recipients_path = 'airdrop/recipients.txt'
 day_key = datetime.now().strftime("%Y-%m-%d")
 
@@ -13,7 +15,7 @@ def send(
     recipient_address: str,
     amount: str,
 ):
-    command = f"spl-token transfer --fund-recipient \
+    command = f"spl-token transfer --fund-recipient --allow-unfunded-recipient \
                 {token_address} \
                 {amount} \
                 {recipient_address}"
@@ -28,6 +30,7 @@ def send(
     else:
         status = 'failed'
         file_to_write = log_file_failed
+    
     writetolog(
         status,
         token_address,
@@ -65,9 +68,9 @@ def get_recipients():
     recipients_new = []
     with open(recipients_path, 'r+') as recipients:
         rows = recipients.readlines()
-        for i, _ in enumerate(rows):
-            recipient_address = rows[i].strip().split(',')[0]
-            amount = rows[i].strip().split(',')[1]
+        for row in rows:
+            recipient_address = row.strip().split(',')[0]
+            amount = row.strip().split(',')[1]
             recipients_new.append({
                 'address': recipient_address,
                 'amount': amount
@@ -118,5 +121,6 @@ log_file_failed = open(logs_failed_path, mode)
 for recipient in recipients:
     if recipient['address'] in paid:
         print(f'Found an already paid address --> {recipient["address"]}')
+        # We continue here, but if the array is too big we could just delete the current address
         continue
     # send(mainnet_token_address, recipient["address"], recipient['amount'])

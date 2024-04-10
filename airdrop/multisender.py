@@ -3,7 +3,9 @@ import json
 from datetime import datetime
 from subprocess import PIPE, Popen
 
-token_address = '39dyZi6jX9ZWPqjT2td33UQYKa4gcCbqDy5MjQPVRsEC'
+DAB_TOKEN_ADDRESS = 'BBfACm5eg8CWmcRmgcn1c2uzN1fGhvQ1b8iDR92uaQVT'
+
+token_address = DAB_TOKEN_ADDRESS
 recipients_path = 'airdrop/recipients.txt'
 day_key = datetime.now().strftime("%Y-%m-%d")
 
@@ -30,7 +32,7 @@ def multisend(
         recipient_address = lines[i].strip().split(',')[0]
         amount = lines[i].strip().split(',')[1]
 
-        command = f"spl-token transfer --fund-recipient \
+        command = f"spl-token transfer --fund-recipient --allow-unfunded-recipient\
                     {token_address} \
                     {amount} \
                     {recipient_address}"
@@ -59,7 +61,11 @@ def multisend(
     # We don't want to have an empty file.
     if os.path.getsize(logs_failed_path) == 0:
         os.remove(logs_failed_path)
+        # End the program
     else:
+        # 1. Read the failed file and get the recipients
+        # 2. Call again the multisend() with the new recipients
+        # 3. Do this until we have no failed file anymore -> this is happening already here
         log_file_failed.close()
 
 

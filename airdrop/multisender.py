@@ -1,9 +1,9 @@
 import os
 import json
 from datetime import datetime
-from subprocess import PIPE, Popen
+from subprocess import PIPE, Popen, run
 
-DAB_TOKEN_ADDRESS = 'BBfACm5eg8CWmcRmgcn1c2uzN1fGhvQ1b8iDR92uaQVT'
+DAB_TOKEN_ADDRESS = '39dyZi6jX9ZWPqjT2td33UQYKa4gcCbqDy5MjQPVRsEC'
 DEVNET_TOKEN_ADDRESS=''
 
 recipients_path = 'airdrop/recipients.txt'
@@ -15,28 +15,23 @@ def send(
     recipient_address: str,
     amount: str,
 ):
-    command = f"spl-token transfer --fund-recipient --allow-unfunded-recipient \
-                {token_address} \
-                {amount} \
-                {recipient_address}"
-    process = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
-    stdout, stderr = process.communicate()
-
+    command = ["spl-token", "transfer", "--fund-recipient", "--allow-unfunded-recipient", token_address, amount, recipient_address]
+    result = run(command, capture_output=True, text=True)
     # Log entry
-    if stdout:
+    if result.stdout:
         status = 'success'
         file_to_write = log_file_succeed
         write_paid(recipient_address, amount, 'signature')
     else:
         status = 'failed'
         file_to_write = log_file_failed
-    
+
     writetolog(
         status,
         token_address,
         recipient_address,
-        stdout,
-        stderr,
+        result.stdout,
+        result.stderr,
         file_to_write,
     )
 
@@ -91,7 +86,7 @@ def writetolog(
         status=status,
         sender_addr=token_address,
         reciever_addr=recipient_address,
-        logs=stdout.decode('utf-8') if stdout else stderr.decode('utf-8')
+        logs=stdout if stdout else stderr
     )
     print(log_entry)
     print(json.dumps(
@@ -123,4 +118,4 @@ for recipient in recipients:
         print(f'Found an already paid address --> {recipient["address"]}')
         # We continue here, but if the array is too big we could just delete the current address
         continue
-    # send(mainnet_token_address, recipient["address"], recipient['amount'])
+    send(DAB_TOKEN_ADDRESS, recipient["address"], recipient['amount'])

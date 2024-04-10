@@ -1,11 +1,10 @@
 import os
 import json
 from datetime import datetime
-from subprocess import PIPE, Popen, run
+from subprocess import run
 
-DAB_TOKEN_ADDRESS = '39dyZi6jX9ZWPqjT2td33UQYKa4gcCbqDy5MjQPVRsEC'
-DEVNET_TOKEN_ADDRESS=''
-
+DAB_TOKEN_ADDRESS = 'BBfACm5eg8CWmcRmgcn1c2uzN1fGhvQ1b8iDR92uaQVT'
+DEVNET_TOKEN_ADDRESS = '39dyZi6jX9ZWPqjT2td33UQYKa4gcCbqDy5MjQPVRsEC'
 recipients_path = 'airdrop/recipients.txt'
 day_key = datetime.now().strftime("%Y-%m-%d")
 
@@ -118,4 +117,4 @@ for recipient in recipients:
         print(f'Found an already paid address --> {recipient["address"]}')
         # We continue here, but if the array is too big we could just delete the current address
         continue
-    send(DAB_TOKEN_ADDRESS, recipient["address"], recipient['amount'])
+    send(DEVNET_TOKEN_ADDRESS, recipient["address"], recipient['amount'])

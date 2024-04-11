@@ -25,10 +25,6 @@ class Airdrop():
 
         self.log_file_succeed, self.log_file_failed = self.create_log_files()
 
-    # @property
-    # def params(self):
-    #     pass
-
     def get_config(
         self,
         devnet: bool = True,

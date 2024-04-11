@@ -1,5 +1,5 @@
 mainnet:
-  url: https://api.mainnet-beta.solana.com/
+  url: https://api.mainnet-beta.solana.com
   keypair_path: ~/.config/solana/mainnet.json
   DAB_token_address: BBfACm5eg8CWmcRmgcn1c2uzN1fGhvQ1b8iDR92uaQVT
 

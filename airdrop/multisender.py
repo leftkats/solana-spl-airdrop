@@ -3,10 +3,25 @@ import json
 from datetime import datetime
 from subprocess import run
 
-DAB_TOKEN_ADDRESS = 'BBfACm5eg8CWmcRmgcn1c2uzN1fGhvQ1b8iDR92uaQVT'
-DEVNET_TOKEN_ADDRESS = '39dyZi6jX9ZWPqjT2td33UQYKa4gcCbqDy5MjQPVRsEC'
-recipients_path = 'airdrop/recipients.txt'
-day_key = datetime.now().strftime("%Y-%m-%d")
+
+def get_config(
+    devnet: bool = False,
+):
+    import yaml
+    with open('config.yml', 'r') as file:
+        config = yaml.safe_load(file)
+
+    config = config['devnet'] if devnet else config['mainnet']
+    return config
+
+
+def init_solana(config: dict):
+    config_subnet = ['solana', 'config', 'set', '--url', config['url']]
+    keypair_config = ['solana', 'config', 'set', '--keypair', config['keypair_path']]
+
+    result = run(config_subnet, capture_output=True, text=True)
+    if result.stdout:
+        result = run(keypair_config, capture_output=True, text=True)
 
 
 def send(
@@ -14,7 +29,7 @@ def send(
     recipient_address: str,
     amount: str,
 ):
-    command = ["spl-token", "transfer", "--fund-recipient", "--allow-unfunded-recipient", token_address, amount, recipient_address]
+    command = ['spl-token', 'transfer', '--fund-recipient', '--allow-unfunded-recipient', token_address, amount, recipient_address]
     result = run(command, capture_output=True, text=True)
     # Log entry
     if result.stdout:
@@ -53,23 +68,24 @@ def get_paid_addresses():
             for row in rows:
                 row = json.loads(row)
                 paid_addresses.append(row['address'])
-    except FileNotFoundError:
-        print('Paid addresses file not found!')
+    except Exception:
+        print('Paid addresses file not found or is empty!')
     return paid_addresses
 
 
 def get_recipients():
-    recipients_new = []
+    """
+    Read recipients csv and return dictionary
+    """
     with open(recipients_path, 'r+') as recipients:
         rows = recipients.readlines()
         for row in rows:
             recipient_address = row.strip().split(',')[0]
             amount = row.strip().split(',')[1]
-            recipients_new.append({
+            yield {
                 'address': recipient_address,
                 'amount': amount
-            })
-    return recipients_new
+            }
 
 
 def writetolog(
@@ -87,7 +103,7 @@ def writetolog(
         reciever_addr=recipient_address,
         logs=stdout if stdout else stderr
     )
-    print(log_entry)
+    # print(log_entry)
     print(json.dumps(
         log_entry,
         ensure_ascii=True),
@@ -96,25 +112,34 @@ def writetolog(
     )
 
 
+def create_log_files():
+    # Create log files
+    logs_succeed_path = f'airdrop/airdrop-{day_key}-logs-succeed.json'
+    mode = 'a+' if os.path.exists(logs_succeed_path) else 'w+'
+    log_file_succeed = open(logs_succeed_path, mode)
+
+    logs_failed_path = f'airdrop/airdrop-{day_key}-logs-failed.json'
+    mode = 'a+' if os.path.exists(logs_failed_path) else 'w+'
+    log_file_failed = open(logs_failed_path, mode)
+
+    return log_file_succeed, log_file_failed
+
+
+# Config
+recipients_path = 'airdrop/recipients.txt'
+day_key = datetime.now().strftime("%Y-%m-%d")
+config = get_config(devnet=True)
+init_solana(config)
+
 # Read data
 paid = get_paid_addresses()
-recipients = get_recipients()
 
-# Create log files
-logs_succeed_path, mode = f'airdrop/airdrop-{day_key}-logs-succeed.json', 'w+'
-if os.path.exists(logs_succeed_path):
-    mode = 'a+'
-log_file_succeed = open(logs_succeed_path, mode)
-
-logs_failed_path, mode = f'airdrop/airdrop-{day_key}-logs-failed.json', 'w+'
-if os.path.exists(logs_failed_path):
-    mode = 'a+'
-log_file_failed = open(logs_failed_path, mode)
+log_file_succeed, log_file_failed = create_log_files()
 
 # Tranfer tokens to recipients
-for recipient in recipients:
+for recipient in get_recipients():
     if recipient['address'] in paid:
         print(f'Found an already paid address --> {recipient["address"]}')
         # We continue here, but if the array is too big we could just delete the current address
         continue
-    send(DEVNET_TOKEN_ADDRESS, recipient["address"], recipient['amount'])
+    send(config['token_address'], recipient["address"], recipient['amount'])

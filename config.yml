@@ -1,0 +1,9 @@
+mainnet:
+  url: https://api.devnet.solana.com
+  keypair_path: ~/.config/solana/mainnet.json
+  DAB_token_address: BBfACm5eg8CWmcRmgcn1c2uzN1fGhvQ1b8iDR92uaQVT
+
+devnet:
+  url: https://api.mainnet-beta.solana.com/
+  keypair_path: ~/.config/solana/devnet.json
+  token_address: 39dyZi6jX9ZWPqjT2td33UQYKa4gcCbqDy5MjQPVRsEC

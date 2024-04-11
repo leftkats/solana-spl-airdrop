@@ -18,7 +18,7 @@ class Airdrop():
         self.day_key = datetime.now().strftime("%Y-%m-%d")
 
         self.config = self.get_config(devnet=devnet)
-        self.init_solana()
+        # self.init_solana()
 
         self.recipients = self.get_recipients()
         self.paid = self.get_paid_addresses()
@@ -45,8 +45,10 @@ class Airdrop():
         keypair_config = ['solana', 'config', 'set', '--keypair', self.config['keypair_path']]
 
         result = run(config_subnet, capture_output=True, text=True)
+        print(result)
         if result.stdout:
             result = run(keypair_config, capture_output=True, text=True)
+            print(result)
 
     def send(
         self,
@@ -65,7 +67,8 @@ class Airdrop():
         if result.stdout:
             status = 'success'
             file_to_write = self.log_file_succeed
-            self.write_paid(recipient_address, amount, 'signature')
+            data = self.parse_stdout(result.stdout)
+            self.write_paid(recipient_address, amount, data['signature'])
         else:
             status = 'failed'
             file_to_write = self.log_file_failed
@@ -87,9 +90,10 @@ class Airdrop():
     ):
         with open('airdrop/paid.ndjson', 'a+') as paid:
             paid_account = {
-                "address": recipient,
-                "amount": amount,
-                "signature": "xx"
+                'address': recipient,
+                'amount': amount,
+                'signature': signature,
+
             }
             print(
                 json.dumps(paid_account, ensure_ascii=True),
@@ -132,13 +136,13 @@ class Airdrop():
         log_file
     ):
         log_entry = dict(
-            timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            timestamp=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             status=status,
             sender_addr=token_address,
             reciever_addr=recipient_address,
             logs=stdout if stdout else stderr
         )
-        print(log_entry)
+        # print(log_entry)
         print(json.dumps(
             log_entry,
             ensure_ascii=True),
@@ -158,6 +162,31 @@ class Airdrop():
 
         return log_file_succeed, log_file_failed
 
+    def parse_stdout(
+        self,
+        stdout: str,
+    ):
+        import re
+        data = {}
+        recipient_pattern = r'Recipient: (.+)'
+        token_account_pattern = r'Recipient associated token account: (.+)'
+        signature_pattern = r'Signature: (.+)'
+
+        recipient_match = re.search(recipient_pattern, stdout)
+        if recipient_match:
+            data['recipient'] = recipient_match.group(1)
+
+        # Extract recipient associated token account
+        token_account_match = re.search(token_account_pattern, stdout)
+        if token_account_match:
+            data['recipient_associated_token_account'] = token_account_match.group(1)
+
+        # Extract signature
+        signature_match = re.search(signature_pattern, stdout)
+        if signature_match:
+            data['signature'] = signature_match.group(1)
+        return data
+
     def multisend():
         airdrop = Airdrop()
         # Tranfer tokens to recipients
@@ -169,6 +198,6 @@ class Airdrop():
                 continue
             airdrop.send(
                 airdrop.config['token_address'],
-                recipient["address"],
+                recipient['address'],
                 recipient['amount']
             )

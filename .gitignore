@@ -2,3 +2,5 @@
 
 airdrop-*
 airdrop/ph
+
+airdrop/__pycache__/*

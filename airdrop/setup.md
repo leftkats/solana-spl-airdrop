@@ -14,6 +14,8 @@ solana config set --url https://api.devnet.solana.com
 # Generate and config a test key
 solana-keygen new --outfile ~/.config/solana/devnet.json
 solana config set --keypair ~/.config/solana/devnet.json
+# Verify address
+solana-keygen verify
 
 # Check address
 spl-token address

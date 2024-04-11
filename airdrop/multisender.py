@@ -183,17 +183,17 @@ class Airdrop():
             data['signature'] = signature_match.group(1)
         return data
 
-    def multisend():
-        airdrop = Airdrop()
-        # Tranfer tokens to recipients
-        for recipient in airdrop.get_recipients():
-            if recipient['address'] in airdrop.paid:
-                print(f'Found an already paid address --> {recipient["address"]}')
-                # We continue here, but if the array is too big we could just
-                # delete the current address
-                continue
-            airdrop.send(
-                airdrop.config['token_address'],
-                recipient['address'],
-                recipient['amount']
-            )
+def multisend():
+    airdrop = Airdrop()
+    # Tranfer tokens to recipients
+    for recipient in airdrop.get_recipients():
+        if recipient['address'] in airdrop.paid:
+            print(f'Found an already paid address --> {recipient["address"]}')
+            # We continue here, but if the array is too big we could just
+            # delete the current address
+            continue
+        airdrop.send(
+            airdrop.config['token_address'],
+            recipient['address'],
+            recipient['amount']
+        )

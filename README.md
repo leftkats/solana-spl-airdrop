@@ -1,7 +1,8 @@
 # ☀️🐍📄 Solana SPL Token Airdrop Script
-
 [![Solana](https://img.shields.io/badge/Solana-%23000000.svg?style=for-the-badge&logo=solana&logoColor=white)](https://solana.com/) [![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)](https://www.python.org/) [![PyYAML](https://img.shields.io/badge/PyYAML-%230077BE.svg?style=for-the-badge&logo=PyYAML&logoColor=white)](https://pyyaml.org/)
 
+
+[![codecov](https://codecov.io/gh/leftkats/solana-spl-airdrop/graph/badge.svg?token=Z3SJO97RRE)](https://codecov.io/gh/leftkats/solana-spl-airdrop)
 # Solana SPL Token Airdrop Script
 
 This Python script automates the process of airdropping SPL tokens to a list of recipients on the Solana blockchain. It utilizes the `spl-token` CLI and logs transaction details.

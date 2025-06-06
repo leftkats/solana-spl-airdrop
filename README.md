@@ -99,13 +99,15 @@ The `Airdrop` class manages the distribution of SPL tokens. It reads recipient a
 3.  Make your changes and commit them.
 4.  Submit a pull request.
 
+
+
+## Wall of Contributors
+
 <a href="https://github.com/leftkats/solana-spl-airdrop/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=leftkats/solana-spl-airdrop" />
 </a>
+<br>
 
-Made with [contrib.rocks](https://contrib.rocks).
+If you liked this repository, support it by starring :star:
 
-## License
-
-This script is licensed under the MIT License.
-
+Thank You for being here :)

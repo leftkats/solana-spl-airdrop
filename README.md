@@ -92,20 +92,12 @@ The `Airdrop` class manages the distribution of SPL tokens. It reads recipient a
 -   `airdrop/airdrop-<YYYY-MM-DD>-logs-succeed.json`: Log of successful transactions.
 -   `airdrop/airdrop-<YYYY-MM-DD>-logs-failed.json`: Log of failed transactions.
 
-## Contributing
 
-1.  Fork the repository.
-2.  Create a new branch for your feature or bug fix.
-3.  Make your changes and commit them.
-4.  Submit a pull request.
-
+### Wall of Contributors
 <a href="https://github.com/leftkats/solana-spl-airdrop/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=leftkats/solana-spl-airdrop" />
 </a>
 
-Made with [contrib.rocks](https://contrib.rocks).
+If you like the repo please support with a :star:
 
-## License
-
-This script is licensed under the MIT License.
-
+Thank you for being here!

@@ -1,4 +1,3 @@
-```markdown
 # :wave: Contributing to `spl-sola-token-transfer`
 
 Thanks for your interest in contributing! This project is experimental and evolving, and **all kinds of contributions are welcome** — from bug reports to pull requests.
@@ -36,4 +35,3 @@ Feel free to open an issue or ask a question — even small contributions are va
 ---
 
 Thanks again for helping improve this project! :rocket:
-```

@@ -1,0 +1,17 @@
+codecov:
+  require_ci_to_pass: yes
+
+coverage:
+  status:
+    project:
+      default:
+        target: 79%
+        threshold: 2%   # Reject PR if coverage drops more than 2%
+    patch:
+      default:
+        threshold: 2%
+
+comment:
+  layout: "reach, diff, flags, files"
+  behavior: default
+  require_changes: false

@@ -142,7 +142,9 @@ class Airdrop:
         )
 
     def create_log_files(self):
-        # Create log files
+        # Ensure airdrop folder exists
+        os.makedirs("airdrop", exist_ok=True)
+
         logs_succeed_path = f"airdrop/airdrop-{self.day_key}-logs-succeed.json"
         mode = "a+" if os.path.exists(logs_succeed_path) else "w+"
         log_file_succeed = open(logs_succeed_path, mode)
